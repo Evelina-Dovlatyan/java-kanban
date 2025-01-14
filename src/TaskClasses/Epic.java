@@ -22,6 +22,10 @@ public class Epic extends Task {
         subtasksId.removeAll(Collections.singleton(id));
     }
 
+    public void removeAllSubtaskId() {
+        subtasksId.clear();
+    }
+
     public ArrayList<Integer> getSubtasksId() {
         return subtasksId;
     }

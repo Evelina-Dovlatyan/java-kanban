@@ -62,15 +62,13 @@ public class TaskManager {
     }
 
     public void putNewTask(Task task) {
-        final int id = getNewID();
-        task.setId(id);
-        tasks.put(id, task);
+        task.setId(getNewID());
+        tasks.put(task.getId(), task);
     }
 
     public void putNewEpic(Epic epic) {
-        final int id = getNewID();
-        epic.setId(id);
-        epics.put(id, epic);
+        epic.setId(getNewID());
+        epics.put(epic.getId(), epic);
     }
 
     public void putNewSubtask(Subtask subtask) {
@@ -78,9 +76,8 @@ public class TaskManager {
         if (epic == null) {
             return;
         } else {
-            final int id = getNewID();
-            subtask.setId(id);
-            subtasks.put(id, subtask);
+            subtask.setId(getNewID());
+            subtasks.put(subtask.getId(), subtask);
             epic.addSubtaskId(subtask.getId());
             updateEpic(epic);
         }

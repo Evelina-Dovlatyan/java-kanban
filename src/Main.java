@@ -1,4 +1,4 @@
-import Manager.TaskManager;
+import Manager.*;
 import TaskClasses.*;
 
 import java.util.ArrayList;

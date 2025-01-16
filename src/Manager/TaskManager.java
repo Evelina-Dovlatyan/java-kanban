@@ -3,7 +3,6 @@ package Manager;
 import TaskClasses.*;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public interface TaskManager {
     ArrayList<Task> getAllTasksList();

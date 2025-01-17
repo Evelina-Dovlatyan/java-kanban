@@ -3,14 +3,23 @@ package Manager;
 import TaskClasses.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
+
+    HistoryManager historyManager = Managers.getDefaultHistory();
 
     private int idCounter = 0;
 
     private final HashMap<Integer, Task> tasks = new HashMap<>();
     private final HashMap<Integer, Epic> epics = new HashMap<>();
     private final HashMap<Integer, Subtask> subtasks = new HashMap<>();
+
+
+    @Override
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
+    }
 
     @Override
     public ArrayList<Task> getAllTasksList() {
@@ -44,8 +53,8 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Epic> epicsList = new ArrayList<>();
 
         for (Subtask subtask : subtasksList) {
-            if (!epicsList.contains(getEpic(subtask.getEpicId()))) {
-                epicsList.add(getEpic(subtask.getEpicId()));
+            if (!epicsList.contains(epics.get(subtask.getEpicId()))) {
+                epicsList.add(epics.get(subtask.getEpicId()));
             }
         }
         for (Epic epic : epicsList) {
@@ -57,16 +66,19 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public Task getTask(int id) {
+        historyManager.add(tasks.get(id));
         return tasks.get(id);
     }
 
     @Override
     public Epic getEpic(int id) {
+        historyManager.add(epics.get(id));
         return epics.get(id);
     }
 
     @Override
     public Subtask getSubtask(int id) {
+        historyManager.add(subtasks.get(id));
         return subtasks.get(id);
     }
 
@@ -84,7 +96,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void putNewSubtask(Subtask subtask) {
-        Epic epic = getEpic(subtask.getEpicId());
+        Epic epic = epics.get(subtask.getEpicId());
         if (epic != null) {
             subtask.setId(getNewID());
             subtasks.put(subtask.getId(), subtask);
@@ -107,7 +119,7 @@ public class InMemoryTaskManager implements TaskManager {
     @Override
     public void updateSubtask(Subtask subtask) {
         subtasks.replace(subtask.getId(), subtask);
-        updateEpic(getEpic(subtask.getEpicId()));
+        updateEpic(epics.get(subtask.getEpicId()));
     }
 
     @Override
@@ -117,7 +129,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeEpic(int id) {
-        Epic epic  = getEpic(id);
+        Epic epic  = epics.get(id);
         ArrayList<Integer> subtasksID = epic.getSubtasksId();
         for (int subId : subtasksID) {
             subtasks.remove(subId);
@@ -127,8 +139,8 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void removeSubtask(int id) {
-        Subtask subtask = getSubtask(id);
-        Epic epic = getEpic(subtask.getEpicId());
+        Subtask subtask = subtasks.get(id);
+        Epic epic = epics.get(subtask.getEpicId());
         epic.removeSubtaskId(id);
         updateEpic(epic);
         subtasks.remove(id);
@@ -137,13 +149,13 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Subtask> getSubtasksOfEpic(int epicId) {
-        Epic epic = getEpic(epicId);
-        ArrayList<Subtask> subtasks = new ArrayList<>();
+        Epic epic = epics.get(epicId);
+        ArrayList<Subtask> newSubtasks = new ArrayList<>();
         for (int id : epic.getSubtasksId()) {
-            Subtask subtask = getSubtask(id);
-            subtasks.add(subtask);
+            Subtask subtask = subtasks.get(id);
+            newSubtasks.add(subtask);
         }
-        return subtasks;
+        return newSubtasks;
     }
 
     private int getNewID() {
@@ -154,7 +166,7 @@ public class InMemoryTaskManager implements TaskManager {
         ArrayList<Status> subtaskStatus = new ArrayList<>();
         ArrayList<Integer> subtasksID = epic.getSubtasksId();
         for (int id : subtasksID) {
-            Subtask subtask = getSubtask(id);
+            Subtask subtask = subtasks.get(id);
             subtaskStatus.add(subtask.getStatus());
         }
         if (!subtasksID.isEmpty()) {

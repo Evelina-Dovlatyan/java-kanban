@@ -3,8 +3,12 @@ package Manager;
 import TaskClasses.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public interface TaskManager {
+
+    List<Task> getHistory();
+
     ArrayList<Task> getAllTasksList();
 
     ArrayList<Epic> getAllEpicsList();

@@ -36,7 +36,7 @@ class InMemoryHistoryManagerTest {
         historyManager.add(task);
 
         final List<Task> savedHistory = historyManager.getHistory();
-        final Task savedTask = savedHistory.get(0);
+        final Task savedTask = savedHistory.getFirst();
 
         assertNotNull(savedHistory, "История пустая.");
         assertNotNull(savedTask, "Задача не найдена.");
@@ -57,12 +57,12 @@ class InMemoryHistoryManagerTest {
         }
 
         final List<Task> savedHistory1 = historyManager.getHistory();
-        final Task savedTask1 = savedHistory1.get(0);
+        final Task savedTask1 = savedHistory1.getFirst();
 
         historyManager.add(task2);
 
         final List<Task> savedHistory2 = historyManager.getHistory();
-        final Task savedTask2 = savedHistory2.get(0);
+        final Task savedTask2 = savedHistory2.getFirst();
 
         assertNotNull(savedHistory1, "История пустая.");
         assertNotNull(savedHistory2, "История пустая.");

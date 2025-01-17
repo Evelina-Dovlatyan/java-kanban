@@ -33,7 +33,7 @@ class InMemoryTaskManagerTest {
 
         assertNotNull(tasks, "Задачи не возвращаются.");
         assertEquals(1, tasks.size(), "Неверное количество задач.");
-        assertEquals(task, tasks.get(0), "Задачи не совпадают.");
+        assertEquals(task, tasks.getFirst(), "Задачи не совпадают.");
     }
 
     @Test
@@ -50,7 +50,7 @@ class InMemoryTaskManagerTest {
 
         assertNotNull(epics, "Эпики не возвращаются");
         assertEquals(1, epics.size(), "Неверное количество эпиков");
-        assertEquals(epic, epics.get(0), "Эпики не совпадают");
+        assertEquals(epic, epics.getFirst(), "Эпики не совпадают");
     }
 
     @Test
@@ -69,7 +69,7 @@ class InMemoryTaskManagerTest {
 
         assertNotNull(subtasks, "Подзадачи не возвращаются");
         assertEquals(1, subtasks.size(), "Неверное количество подзадач");
-        assertEquals(savedSubtask, subtasks.get(0), "Подзадачи не совпадают");
+        assertEquals(savedSubtask, subtasks.getFirst(), "Подзадачи не совпадают");
     }
 
     @Test
@@ -354,5 +354,30 @@ class InMemoryTaskManagerTest {
         assertNotNull(subtasks2, "Подзадачи не возвращаются.");
         assertFalse(subtasks2.contains(savedSubtask1), "Подзадача не удалена.");
         assertFalse(subtasks2OfEpic.contains(savedSubtask1), "Удаление подзадачи в эпике не произошло.");
+    }
+
+    @Test
+    void getHistory() {
+        final List<Task> history = taskManager.getHistory();
+        assertNotNull(history, "История не создана и не готова к работе.");
+    }
+
+    @Test
+    void getTask() {
+        Task task = new Task("name", "description", Status.NEW);
+        taskManager.putNewTask(task);
+
+        final Task savedTask = taskManager.getAllTasksList().getFirst();
+        assertNotNull(savedTask, "Задача не найдена.");
+        assertEquals(task, savedTask, "Задачи не совпадают.");
+
+        taskManager.getTask(savedTask.getId());
+
+        final List<Task> history = taskManager.getHistory();
+        final Task savedTaskInHistory = history.getFirst();
+        assertNotNull(history, "История пустая.");
+        assertEquals(1, history.size(), "История пустая.");
+        assertNotNull(savedTaskInHistory, "Задача не найдена.");
+        assertEquals(savedTaskInHistory, savedTask, "Задачи в списке TaskManager и в истории не совпадают.");
     }
 }
